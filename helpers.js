@@ -1,4 +1,8 @@
-// turn query param into array
+/**
+ * Attempt to convert an array of strings to an array of numbers
+ * @param {Array} numsAsStrings array of strings
+ * @returns {Array|Error} an array or an error object
+ */
 function convertAndValidate(numsAsStrings) {
   let result = [];
 
@@ -44,6 +48,10 @@ function findMedian(nums) {
 }
 
 // MODE
+/**
+ * Build a frequency counter object from an array
+ * @param {Array} arr any array
+ */
 function frequencyCounter(nums) {
   let frequency = {};
 
@@ -57,6 +65,10 @@ function frequencyCounter(nums) {
   return frequency;
 }
 
+/**
+ * Find the most common element in the array
+ * @param {Array} arr any array
+ */
 function findMode(nums) {
   let results = frequencyCounter(nums); // returns an object
 
