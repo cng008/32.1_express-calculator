@@ -1,58 +1,62 @@
 const express = require('express');
 const app = express();
 const ExpressError = require('./expressError');
+const {
+  convertAndValidate,
+  findMode,
+  findMean,
+  findMedian
+} = require('./helpers');
 
 app.use(express.json());
 
-app.get('/mean', (req, res) => {
-  if (!req.query.nums) throw new ExpressError('nums are required', 400);
-
-  let { operation = 'mean', value = 0, nums = 0 } = req.query;
-  //   turn query param into array
-  nums = req.query.nums.split(',').map(num => {
-    return parseInt(num);
-  });
-  // count and get mean of numbers
-  for (let i in nums) {
-    value += nums[i];
+app.get('/mean', (req, res, next) => {
+  let numsAsStrings = req.query.nums.split(',');
+  // check if anything bad was put in
+  let nums = convertAndValidate(numsAsStrings);
+  if (nums instanceof Error) {
+    throw new ExpressError(nums.message);
   }
-  value = (value / nums.length).toFixed(2);
-  // return res.send(
-  //   `MEAN operation is: ${operation}, value is: ${value}, nums: ${nums}`
-  // );
-  return res.json({
-    response: { operation: operation, value: value }
-  });
+
+  let result = {
+    operation: 'mean',
+    result: findMean(nums).toFixed(2)
+  };
+
+  return res.send(result);
 });
 
-app.get('/median', (req, res) => {
-  if (!req.query.nums) throw new ExpressError('nums are required', 400);
-
-  let { operation = 'median', value = 0, nums = 0 } = req.query;
-  //   turn query param into array
-  nums = req.query.nums.split(',').map(num => {
-    return parseInt(num);
-  });
-  // count and get median of numbers
-  nums.sort();
-
-  let middleIndex = Math.floor(nums.length / 2);
-  let median;
-
-  if (nums.length % 2 === 0) {
-    median = (nums[middleIndex] + nums[middleIndex - 1]) / 2;
-  } else {
-    median = nums[middleIndex];
+app.get('/median', (req, res, next) => {
+  let numsAsStrings = req.query.nums.split(',');
+  // check if anything bad was put in
+  let nums = convertAndValidate(numsAsStrings);
+  if (nums instanceof Error) {
+    throw new ExpressError(nums.message);
   }
-  console.log(median);
-  value = median;
-  // return res.send(
-  //   `MEDIAN operation is: ${operation}, value is: ${value}, nums: ${nums}`
-  // );
-  return res.json({ response: { operation: operation, value: value } });
+
+  let result = {
+    operation: 'median',
+    result: findMedian(nums)
+  };
+
+  return res.send(result);
 });
 
-app.get('/mode', (req, res) => {});
+app.get('/mode', (req, res, next) => {
+  let numsAsStrings = req.query.nums.split(',');
+  // check if anything bad was put in
+  let nums = convertAndValidate(numsAsStrings);
+  if (nums instanceof Error) {
+    throw new ExpressError(nums.message);
+  }
+
+  let result = {
+    operation: 'mode',
+    result: findMode(nums)
+  };
+
+  return res.send(result);
+});
 
 // 404 HANDLER
 app.use((req, res, next) => {
