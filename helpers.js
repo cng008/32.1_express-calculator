@@ -82,7 +82,7 @@ function findMode(nums) {
       maxKey = num;
     }
   }
-  return maxKey;
+  return parseInt(maxKey);
 }
 
 module.exports = {
